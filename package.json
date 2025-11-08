@@ -1,0 +1,21 @@
+{
+  "name": "linkverse",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install --prefix BACKEND && npm install --prefix FRONTEND && npm run build --prefix FRONTEND",
+    "start": "npm run start --prefix BACKEND"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devel-maverick/Linkverse.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/devel-maverick/Linkverse/issues"
+  },
+  "homepage": "https://github.com/devel-maverick/Linkverse#readme"
+}
