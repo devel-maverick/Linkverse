@@ -1,7 +1,8 @@
+import { sendWelcomeEmail } from '../emails/emailHandlers.js';
 import prisma from '../lib/db.js';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../lib/utils.js';
-
+import { ENV } from '../lib/env.js';
 export const signup = async (req, res) => {
     const { fullName, email, password } = req.body;
     try {
@@ -35,6 +36,13 @@ export const signup = async (req, res) => {
             if (process.env.JWT_SECRET) {
                 generateToken(newUser.id, res);
             }
+            try{
+            await sendWelcomeEmail(newUser.fullName,newUser.email,ENV.CLIENT_URL)
+            }catch(err){
+               console.error('Failed to send welcome email:', err);
+
+            }
+
             return res.status(201).json({
                 message: 'User created successfully',
                 user: { id: newUser.id, fullName: newUser.fullName, email: newUser.email },
