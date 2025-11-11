@@ -51,7 +51,37 @@ export const signup = async (req, res) => {
             return res.status(400).json({ message: 'Invalid data' });
         }
     } catch (err) {
-        console.error(err);
+        console.error('err in signup:',err);
         return res.status(500).json({ message: 'Server Error' });
     }
 };
+export const login = async (req, res) =>{
+    const {email,password}=req.body;
+    try{
+
+        const user=await prisma.user.findUnique({where:{email}})
+        if(!user){
+            return res.status(400).json({message:'Invalid credentials'})
+        }
+        const ispasswordMatch=await bcrypt.compare(password,user.password);
+        if(!ispasswordMatch){
+            return res.status(400).json({message:'Invalid credentials'})
+        }
+        generateToken(user.id,res)
+        res.status(200).json({
+            id:user.id,
+            fullName:user.fullName,
+            email:user.email,
+            profilePic:user.profilePic
+        })
+    }catch(err){
+        console.log('err in login:',err)
+        res.status(500).json({message:'Server Error'})
+
+    }
+};
+
+export const logout = (req, res) => {
+    res.cookie("jwt","",{maxAge:0})
+    res.status(200).json({message:'Logged out successfully'})
+}
