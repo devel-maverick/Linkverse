@@ -9,16 +9,18 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
+
 model User {
-  id          Int      @id @default(autoincrement())
-  email       String   @unique
-  fullName    String
-  password    String   @db.VarChar(255)
-  profilePic  Bytes?   // Stores image binary (BLOB)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  fullName   String
+  password   String   @db.VarChar(255)
+  profilePic String?  @db.VarChar(500)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
