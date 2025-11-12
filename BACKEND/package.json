@@ -14,6 +14,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@arcjet/inspect": "^1.0.0-beta.15",
+    "@arcjet/node": "^1.0.0-beta.15",
     "@prisma/client": "^6.18.0",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.5.1",
