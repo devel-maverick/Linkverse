@@ -3,6 +3,8 @@ import prisma from '../lib/db.js';
 import bcrypt from 'bcryptjs';
 import { generateToken } from '../lib/utils.js';
 import { ENV } from '../lib/env.js';
+import cloudinary from '../lib/cloudinary.js';
+
 export const signup = async (req, res) => {
     const { fullName, email, password } = req.body;
     try {
@@ -85,3 +87,27 @@ export const logout = (req, res) => {
     res.cookie("jwt","",{maxAge:0})
     res.status(200).json({message:'Logged out successfully'})
 }
+
+export const updateProfile = async (req, res) => {
+    try{
+        const {profilePic}=req.body;
+        if (!profilePic) {
+            return res.status(400).json({ message: 'Profile picture is required' });
+        }
+        const userId=req.user.id;
+        const uploaded=await cloudinary.uploader.upload(profilePic)
+        const updatedUser=
+        await prisma.user.update({
+            where:{id:userId}
+            ,data:{
+                profilePic:uploaded.secure_url
+            }
+    })
+    res.status(200).json(updatedUser)
+    }catch(err){
+        console.log('err in updateProfile:',err)
+        res.status(500).json({message:'Server Error'})
+
+    }
+}
+
