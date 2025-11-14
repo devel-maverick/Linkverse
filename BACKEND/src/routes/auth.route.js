@@ -4,7 +4,7 @@ import {protectRoute} from '../middleware/auth.middleware.js';
 import {signup,login,logout,updateProfile} from '../controllers/auth.controller.js';
 import { arcjetProtection } from '../middleware/arcjet.middleware.js';
 
-router.use(arcjetProtection);
+// router.use(arcjetProtection);
 router.post('/signup',signup);
 
 router.post('/login',login)
