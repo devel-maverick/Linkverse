@@ -40,13 +40,30 @@ export const sendMessage=async (req,res)=>{
         const {text,image}=req.body;
         const senderId=Number(req.user.id);
         const receiverId = Number(req.params.id);
+            //  If no text and no image
+            if (!text && !image) {
+            return res.status(400).json({ message: "Text or image is required." });
+            }
+
+            //  Cannot message yourself
+            if (senderId === receiverId) {
+            return res.status(400).json({ message: "Cannot send messages to yourself." });
+            }
+
+            //  Check if receiver exists in Prisma
+        const receiverExists = await prisma.user.findUnique({
+            where: { id: receiverId }
+            });
+
+            if (!receiverExists) {
+            return res.status(404).json({ message: "Receiver not found." });
+            }
+
         let imageUrl;
         if(image){
             const uploaded=await cloudinary.uploader.upload(image)
             imageUrl=uploaded.secure_url
         }
-    // ⏱ DB WRITE TEST STARTS HERE
-    console.time("createMessage");
 
     const newMessage = await prisma.message.create({
       data: {
@@ -56,8 +73,6 @@ export const sendMessage=async (req,res)=>{
         image: imageUrl
       }
     });
-
-    console.timeEnd("createMessage");
         // todo: send message in real time if user is online using sockets
         res.status(201).json(newMessage)
 
