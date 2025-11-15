@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import {ENV} from './lib/env.js';
 import authRoutes from './routes/auth.route.js';
@@ -7,6 +8,10 @@ import path from 'path';
 import {connectDB} from './lib/db.js';
 const app=express();
 app.use(express.json());
+app.use(cors({
+    origin:ENV.CLIENT_URL,
+    credentials:true,
+}));
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 const __dirname=path.resolve()
