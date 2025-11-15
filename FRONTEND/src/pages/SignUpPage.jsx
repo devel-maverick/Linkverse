@@ -83,13 +83,13 @@ function SignUpPage() {
                     {isSigningUp ? (
                       <LoaderIcon className="w-full h-5 animate-spin text-center" />
                     ) : (
-                      "Create Account"
+                      "Create your Account"
                     )}
                   </button>
                 </form>
 
                 <div className="mt-6 text-center">
-                  <Link to="/login" className="auth-link">
+                  <Link to="/" className="auth-link">
                     Already have an account? Login
                   </Link>
                 </div>
@@ -105,7 +105,7 @@ function SignUpPage() {
                   className="w-full h-auto object-contain"
                 />
                 <div className="mt-6 text-center">
-                  <h3 className="text-xl font-medium text-cyan-400"></h3>
+                  <h3 className="text-xl font-medium text-cyan-400">Connect Anytime,Anywhere</h3>
 
                   <div className="mt-4 flex justify-center gap-4">
                     <span className="auth-badge">Chat</span>
@@ -122,3 +122,4 @@ function SignUpPage() {
   );
 }
 export default SignUpPage;
+
