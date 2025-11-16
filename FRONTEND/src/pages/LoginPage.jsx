@@ -15,7 +15,7 @@ function LoginPage() {
 
   return (
     <div className="w-full flex items-center justify-center p-4 bg-transparent ">
-      <div className="relative w-full max-w-6xl md:h-[800px] h-[650px] bg-white rounded-xl shadow-xl z-10">
+      <div className="relative w-full max-w-6xl md:h-[650px] h-[650px] bg-white rounded-xl shadow-xl z-10">
         <BorderAnimatedContainer>
           <div className="w-full flex flex-col md:flex-row">
             {/* FORM CLOUMN - LEFT SIDE */}
@@ -85,7 +85,7 @@ function LoginPage() {
             <div className="hidden md:w-1/2 md:flex items-center justify-center p-6 bg-white">
               <div>
                 <img
-                  src="image1.png"
+                  src="image2.png"
                   alt="People using mobile devices"
                   className="w-full h-auto object-contain"
                 />

@@ -15,7 +15,7 @@ function SignUpPage() {
 
   return (
     <div className="w-full flex items-center justify-center p-4 bg-transparent ">
-      <div className="relative w-full max-w-6xl md:h-[800px] h-[650px] bg-white rounded-xl shadow-xl z-10">
+      <div className="relative w-full max-w-4xl md:h-[650px] h-[650px] bg-white rounded-xl shadow-xl z-10">
         <BorderAnimatedContainer>
           <div className="w-full flex flex-col md:flex-row">
             {/* FORM CLOUMN - LEFT SIDE */}
@@ -117,6 +117,7 @@ function SignUpPage() {
             </div>
           </div>
         </BorderAnimatedContainer>
+
       </div>
     </div>
   );
