@@ -23,6 +23,7 @@ const aj = arcjet({
       max: 100, // maximum requests in the interval
       interval: 60, // 60 second window
     }),
+    
   ],
 });
 export default aj;
