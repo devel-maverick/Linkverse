@@ -4,8 +4,7 @@ import UsersLoading from './UsersLoading'
 import { useAuthStore } from '../store/useAuthStore'
 function ContactList() {
   const {isUserLoading,allContacts,setSelectedUser,getAllContacts}=useChatStore()
- useEffect
-(()=>{getAllContacts()},[getAllContacts])
+ useEffect(()=>{getAllContacts()},[getAllContacts])
   if(isUserLoading) return <UsersLoading/>
 
   return (
