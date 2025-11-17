@@ -14,12 +14,20 @@ const io=new Server(server,{
 })
 io.use(socketAuthMiddleware)
 
+// to check if user is online or not
+
+export function getRecieverSocketId(userId){
+    return userSocketMap[userId]
+}
+//for storing online users
 const userSocketMap={}
  io.on("connection",(socket)=>{
     console.log("user connected",socket.user.fullName)
     const userId=socket.userId
     userSocketMap[userId]=socket.id
+    //to send to very users
     io.emit("getOnlineUsers",Object.keys(userSocketMap))
+    //removing from object
     socket.on("disconnect",()=>{
         console.log("user disconnect",socket.user.fullName)
         delete userSocketMap[userId]

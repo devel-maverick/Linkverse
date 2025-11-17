@@ -1,5 +1,7 @@
 import prisma from "../lib/db.js"
 import cloudinary from '../lib/cloudinary.js';
+import { getRecieverSocketId } from "../lib/socket.js";
+import { io } from "../lib/socket.js";
 export const getAllContacts =async (req, res) => {
    try{
     const loggedinUserId=req.user.id;
@@ -74,7 +76,12 @@ export const sendMessage=async (req,res)=>{
       }
     });
         // todo: send message in real time if user is online using sockets
+        const receiverSocketId=getRecieverSocketId(receiverId)
+        if(receiverSocketId){
+            io.to(receiverSocketId).emit("newMessage",newMessage)
+        }
         res.status(201).json(newMessage)
+
 
     }catch(err){
          console.error("SEND MESSAGE ERROR:", err);
