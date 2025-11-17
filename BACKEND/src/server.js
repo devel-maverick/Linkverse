@@ -6,7 +6,7 @@ import authRoutes from './routes/auth.route.js';
 import messageRoutes from './routes/message.route.js';
 import path from 'path';
 import {connectDB} from './lib/db.js';
-const app=express();
+import { app,server } from './lib/socket.js';
 app.use(express.json({ limit: '10mb' }));
 app.use(cors({
     origin:ENV.CLIENT_URL,
@@ -29,7 +29,7 @@ if(process.env.NODE_ENV==='production'){
 const start = async () => {
     try {
         await connectDB();
-        app.listen(PORT, () => {
+        server.listen(PORT, () => {
             console.log(`server is running on port ${PORT}`);
         });
     } catch (err) {
