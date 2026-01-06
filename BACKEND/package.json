@@ -4,8 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "prisma:reset": "rm -rf node_modules package-lock.json && npm install prisma@6.18.0 @prisma/client@6.18.0 && npx prisma generate",
-    "postinstall": "prisma generate",
     "dev": "nodemon src/server.js",
     "start": "node src/server.js"
   },
@@ -16,7 +14,6 @@
   "dependencies": {
     "@arcjet/inspect": "^1.0.0-beta.15",
     "@arcjet/node": "^1.0.0-beta.15",
-    "@prisma/client": "^6.18.0",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^2.5.1",
     "cookie-parser": "^1.4.7",
@@ -24,8 +21,9 @@
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.0.0",
     "nodemon": "^3.1.10",
-    "prisma": "^6.18.0",
     "resend": "^6.4.2",
     "socket.io": "^4.8.1"
   }

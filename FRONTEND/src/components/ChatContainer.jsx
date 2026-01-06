@@ -11,7 +11,7 @@ function ChatContainer() {
   const {authUser}=useAuthStore()
   const messageEndRef=useRef(null)
   useEffect(()=>{
-    getMessagesByUserId(selectedUser.id)
+    getMessagesByUserId(selectedUser._id)
     subscribeToMessage()
     return ()=>unsubscribeFromMessages()
   },[selectedUser,getMessagesByUserId,unsubscribeFromMessages,subscribeToMessage])
@@ -29,9 +29,9 @@ function ChatContainer() {
       {messages.length>0 && !isMessagesLoading?(
        <div className='max-w-3xl mx-auto space-y-6'>
         {messages.map(msg=>(
-          <div key={msg.id} className={`chat ${msg.senderId===authUser.id?"chat-end":"chat-start"}`}>
+          <div key={msg._id} className={`chat ${msg.senderId===authUser._id?"chat-end":"chat-start"}`}>
             <div className={`chat-bubble relative ${
-              msg.senderId===authUser.id? "bg-blue-500 text-white":"bg-slate-800 text-slate-200"
+              msg.senderId===authUser._id? "bg-blue-500 text-white":"bg-cyan-500/10 text-black"
             }`}>
 
               {msg.image && (<img src={msg.image} alt="shared" className='rounded-lg h-48 object cover'/>)}
