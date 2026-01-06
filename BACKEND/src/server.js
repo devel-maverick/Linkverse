@@ -7,6 +7,8 @@ import messageRoutes from './routes/message.route.js';
 import path from 'path';
 import {connectDB} from './lib/db.js';
 import { app,server } from './lib/socket.js';
+import meetingRoutes from "./routes/meeting.route.js";
+
 app.use(express.json({ limit: '10mb' }));
 app.use(cors({
     origin:ENV.CLIENT_URL,
@@ -20,6 +22,7 @@ const PORT=ENV.PORT || 3000;
 
 app.use('/api/auth',authRoutes);
 app.use('/api/messages',messageRoutes);
+app.use("/api/meeting", meetingRoutes);
 if(process.env.NODE_ENV==='production'){
         app.use(express.static(path.join(__dirname,'../FRONTEND/dist')));
         app.get(/.*/,(_,res)=>{

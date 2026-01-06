@@ -23,7 +23,7 @@ function ProfileHeader() {
   };
 
   return (
-    <div className='p-6 border-b border-slate-700/50'>
+    <div className='p-6 border-b border-slate-500/20'>
       <div className='flex items-center justify-between'>
         <div className='flex items-center gap-3'>
           {/* Avatar */}
@@ -54,10 +54,10 @@ function ProfileHeader() {
 
           {/* username + online */}
           <div>
-            <h3 className='text-slate-200 font-medium text-base max-w-[180px] truncate'>
+            <h3 className='text-black font-medium text-base max-w-[180px] truncate'>
               {authUser.fullName}
             </h3>
-            <p className='text-slate-400 text-xs'>Online</p>
+            <p className='text-black text-xs'>Online</p>
           </div>
         </div>
 

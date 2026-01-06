@@ -78,11 +78,10 @@ export const useChatStore=create((set,get)=>({
     sendMessage:async(messageData)=>{
         const {selectedUser,messages}=get()
         const {authUser} =useAuthStore.getState()
-        const tempId=`temp-${Date.now()}`
+        // const tempId=`temp-${Date.now()}`
         const optimisticMessage={
-            id:tempId,
-            senderId:authUser.id,
-            recieverId:selectedUser.id,
+            senderId:authUser._id,
+            recieverId:selectedUser._id,
             text:messageData.text,
             image:messageData.image,
             createdAt:new Date().toISOString(),
@@ -91,7 +90,7 @@ export const useChatStore=create((set,get)=>({
         };
         set({ messages: [...messages, optimisticMessage] });
         try{
-            const res=await axiosInstance.post(`/messages/send/${selectedUser.id}`,messageData)
+            const res=await axiosInstance.post(`/messages/send/${selectedUser._id}`,messageData)
             set({messages:messages.concat(res.data)})
         }catch(err){
             set({messages:messages})
@@ -104,7 +103,7 @@ export const useChatStore=create((set,get)=>({
         if (!selectedUser) return;
         const socket=useAuthStore.getState().socket;
         socket.on("newMessage",(newMessage)=>{
-            const isMessageSentFromSelectedUser=newMessage.senderId===selectedUser.id;
+            const isMessageSentFromSelectedUser=newMessage.senderId===selectedUser._id;
             if(!isMessageSentFromSelectedUser) return;
             const currentMessages=get().messages
             set({messages:[...currentMessages,newMessage]})
