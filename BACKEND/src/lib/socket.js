@@ -25,7 +25,7 @@ const userSocketMap={}
     console.log("user connected",socket.user.fullName)
     const userId=socket.userId
     userSocketMap[userId]=socket.id
-    //to send to every users
+    //to send to very users
     io.emit("getOnlineUsers",Object.keys(userSocketMap))
     //removing from object
     socket.on("disconnect",()=>{
