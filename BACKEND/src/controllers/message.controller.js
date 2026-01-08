@@ -1,123 +1,111 @@
-import cloudinary from "../lib/cloudinary.js";
-import { getRecieverSocketId, io } from "../lib/socket.js";
+import prisma from "../lib/db.js"
+import cloudinary from '../lib/cloudinary.js';
+import { getRecieverSocketId } from "../lib/socket.js";
+import { io } from "../lib/socket.js";
+export const getAllContacts =async (req, res) => {
+   try{
+    const loggedinUserId=req.user.id;
+    const filteredUsers=await prisma.user.findMany({
+        where:{
+            id:{not:loggedinUserId}
+        },
+        omit: { password: true }
+    })
+    res.status(200).json(filteredUsers)
 
-import User from "../models/User.js";
-import Message from "../models/Message.js";
+   }catch(err){
+    console.log('err in getAllContacts:',err)
+    res.status(500).json({message:'Server Error'})
 
-// ---------------------------- GET ALL CONTACTS ----------------------------
-export const getAllContacts = async (req, res) => {
-  try {
-    const loggedInUserId = req.user._id;
+   } 
 
-    const users = await User.find({ _id: { $ne: loggedInUserId } })
-      .select("-password");
-
-    res.status(200).json(users);
-  } catch (err) {
-    console.log("Error in getAllContacts:", err);
-    res.status(500).json({ message: "Server Error" });
-  }
-};
-
-// ---------------------------- GET MESSAGES BY USER ID ----------------------------
-export const getMessagesbyUserId = async (req, res) => {
-  try {
-    const myId = req.user._id;
-    const userToChatId = req.params.id;
-
-    const messages = await Message.find({
-      $or: [
-        { senderId: myId, receiverId: userToChatId },
-        { senderId: userToChatId, receiverId: myId }
-      ]
-    }).sort({ createdAt: 1 });
-
-    res.status(200).json(messages);
-  } catch (err) {
-    console.log("Error in getMessagesbyUserId:", err);
-    res.status(500).json({ message: "Server Error" });
-  }
-};
-
-// ---------------------------- SEND MESSAGE ----------------------------
-export const sendMessage = async (req, res) => {
-  try {
-    const { text, image } = req.body;
-    const senderId = req.user._id;
-    const receiverId = req.params.id;
-
-    // No empty messages
-    if (!text && !image) {
-      return res.status(400).json({ message: "Text or image is required." });
+}
+export const getMessagesbyUserId=async (req,res)=>{
+    try{
+        const myId=req.user.id;
+        const userToChatId=Number(req.params.id)
+        const messages=await prisma.message.findMany({
+            where:{
+                OR:[
+                    {senderId:myId,receiverId:userToChatId},
+                    {senderId:userToChatId,receiverId:myId}
+                ]
+    }})
+        res.status(200).json(messages)
+    }catch(err){
+       console.log('err in getMessagesbyUserId:',err)
+         res.status(500).json({message:'Server Error'})
     }
+}
+export const sendMessage=async (req,res)=>{
+    try{
+        const {text,image}=req.body;
+        const senderId=Number(req.user.id);
+        const receiverId = Number(req.params.id);
+            //  If no text and no image
+            if (!text && !image) {
+            return res.status(400).json({ message: "Text or image is required." });
+            }
 
-    if (senderId.toString() === receiverId.toString()) {
-      return res.status(400).json({ message: "Cannot send messages to yourself." });
-    }
+            //  Cannot message yourself
+            if (senderId === receiverId) {
+            return res.status(400).json({ message: "Cannot send messages to yourself." });
+            }
 
-    // Check receiver exists
-    const receiverExists = await User.findById(receiverId);
-    if (!receiverExists) {
-      return res.status(404).json({ message: "Receiver not found." });
-    }
+            //  Check if receiver exists in Prisma
+        const receiverExists = await prisma.user.findUnique({
+            where: { id: receiverId }
+            });
 
-    let imageUrl = null;
-    if (image) {
-      const uploaded = await cloudinary.uploader.upload(image);
-      imageUrl = uploaded.secure_url;
-    }
+            if (!receiverExists) {
+            return res.status(404).json({ message: "Receiver not found." });
+            }
 
-    const newMessage = await Message.create({
-      senderId,
-      receiverId,
-      text,
-      image: imageUrl
+        let imageUrl;
+        if(image){
+            const uploaded=await cloudinary.uploader.upload(image)
+            imageUrl=uploaded.secure_url
+        }
+
+    const newMessage = await prisma.message.create({
+      data: {
+        senderId,
+        receiverId,
+        text,
+        image: imageUrl
+      }
     });
+        // todo: send message in real time if user is online using sockets
+        const receiverSocketId=getRecieverSocketId(receiverId)
+        if(receiverSocketId){
+            io.to(receiverSocketId).emit("newMessage",newMessage)
+        }
+        res.status(201).json(newMessage)
 
-    // ---------------- SEND IN REALTIME VIA SOCKET ----------------
-    const receiverSocketId = getRecieverSocketId(receiverId);
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit("newMessage", newMessage);
+
+    }catch(err){
+         console.error("SEND MESSAGE ERROR:", err);
+  res.status(500).json({ message: "Error sending message", error: err.message });
     }
-
-    res.status(201).json(newMessage);
-
-  } catch (err) {
-    console.error("SEND MESSAGE ERROR:", err);
-    res.status(500).json({ message: "Error sending message", error: err.message });
-  }
-};
-
-// ---------------------------- GET CHAT PARTNERS ----------------------------
-export const getChatPartners = async (req, res) => {
-  try {
-    const loggedInUserId = req.user._id;
-
-    const messages = await Message.find({
-      $or: [
-        { senderId: loggedInUserId },
-        { receiverId: loggedInUserId }
-      ]
-    });
-
-    const chatPartnerIds = [
-      ...new Set(
-        messages.map(msg =>
-          msg.senderId.toString() === loggedInUserId.toString()
-            ? msg.receiverId.toString()
-            : msg.senderId.toString()
-        )
-      )
-    ];
-
-    const chatPartners = await User.find({
-      _id: { $in: chatPartnerIds }
-    }).select("-password");
-
-    res.status(200).json(chatPartners);
-
-  } catch (err) {
-    console.log("Error in getChatPartners:", err);
-    res.status(500).json({ message: "Server Error" });
-  }
-};
+}
+export const getChatPartners=async (req,res)=>{
+    try{
+        const loggedinUserId=Number(req.user.id);
+        const messages=await prisma.message.findMany({
+            where:{
+                OR:[
+                    {senderId:loggedinUserId},
+                    {receiverId:loggedinUserId}]
+                }})
+        const chatPartnerIds=[
+            ...new Set(messages.map(msq=>msq.senderId===loggedinUserId?msq.receiverId:msq.senderId))]
+                const chatPartners = await prisma.user.findMany({
+                where: { id: { in: chatPartnerIds } },
+                omit: { password: true }
+                });
+        res.status(200).json(chatPartners)
+    }catch(err){
+        console.log('err in getChatPartners:',err)
+        res.status(500).json({message:'Server Error'})
+    }
+}

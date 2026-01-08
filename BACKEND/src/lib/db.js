@@ -1,12 +1,15 @@
-import mongoose from "mongoose";
-import { ENV } from "./env.js";
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export const connectDB = async () => {
   try {
-    await mongoose.connect(ENV.MONGO_URL);
-    console.log("🔥 MongoDB Connected Successfully");
+    await prisma.$connect();
+    console.log("PostgreSQL (Supabase) CONNECTED ✅");
   } catch (err) {
-    console.error("MongoDB connection error:", err.message);
-    process.exit(1);
+    console.error("Database connection error:", err.message || err);
+    process.exit(1); 
   }
 };
+
+export default prisma;
