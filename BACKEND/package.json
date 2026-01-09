@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prisma:reset": "rm -rf node_modules package-lock.json && npm install prisma@6.18.0 @prisma/client@6.18.0 && npx prisma generate",
-    "postinstall": "prisma generate",
+    "postinstall": "prisma generate && prisma migrate deploy",
     "dev": "nodemon src/server.js",
     "start": "node src/server.js"
   },
