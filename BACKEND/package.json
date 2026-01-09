@@ -3,16 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "prisma:reset": "rm -rf node_modules package-lock.json && npm install prisma@6.18.0 @prisma/client@6.18.0 && npx prisma generate",
-    "postinstall": "prisma generate && prisma migrate deploy",
+    "postinstall": "prisma generate",
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "prisma migrate deploy && node src/server.js"
   },
-  "keywords": [],
-  "type": "module",
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@arcjet/inspect": "^1.0.0-beta.15",
     "@arcjet/node": "^1.0.0-beta.15",
