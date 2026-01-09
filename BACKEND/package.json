@@ -8,7 +8,7 @@
     "prisma:reset": "rm -rf node_modules package-lock.json && npm install prisma@6.18.0 @prisma/client@6.18.0 && npx prisma generate",
     "postinstall": "prisma generate",
     "dev": "nodemon src/server.js",
-    "start": "prisma migrate deploy && node src/server.js"
+    "start": "node src/server.js"
   },
   "dependencies": {
     "@arcjet/inspect": "^1.0.0-beta.15",
