@@ -2,32 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
-@property --border-angle {
-    inherits: false;
-    initial-value: 0deg;
-    syntax: '<angle>';
+:root {
+  /* --wa-green: #00a884; */
+  /* --wa-green-dark: #008f6f; */
+  /* --wa-bg: #d1d7db; */
+  /* --wa-header-bg: #f0f2f5; */
+  /* --wa-chat-bg: #efeae2; */
+  /* --wa-message-out: #d9fdd3; */
+  /* --wa-message-out-hover: #D9FDD3; */
+  /* --wa-message-in: #ffffff; */
+  /* --wa-message-in-hover: #FFFFFF; */
 }
+
+@property --border-angle {
+  inherits: false;
+  initial-value: 0deg;
+  syntax: '<angle>';
+}
+
+body {
+  @apply bg-base-100 text-base-content;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-base-content/20 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-base-content/30;
+}
+
 .input {
-  @apply w-full bg-slate-800/50 border border-slate-700 rounded-lg py-2 pl-10 pr-4 text-slate-200 placeholder-slate-400 focus:ring-2 focus:ring-cyan-500 focus:border-transparent;
+  @apply w-full bg-base-200 border border-base-content/20 py-2 pl-10 pr-4 text-base-content placeholder-base-content/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50;
 }
 
 .auth-input-icon {
-  @apply absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 size-5;
+  @apply absolute left-3 top-1/2 -translate-y-1/2 text-base-content/50 size-5;
 }
-.auth-input-label{
-    @apply block text-sm font-medium text-slate-300 mb-2;
+
+.auth-input-label {
+  @apply block text-sm font-medium text-base-content/70 mb-2;
 }
 
 .auth-badge {
-  @apply inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-cyan-500/20 text-cyan-300;
+  @apply inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary;
 }
 
 .auth-btn {
-  @apply w-full bg-cyan-500 text-white rounded-lg py-2.5 font-medium
-  hover:bg-cyan-600 focus:ring-2 focus:ring-cyan-500;
+  @apply w-full btn btn-primary rounded-lg text-white font-medium transition-colors;
 }
 
 .auth-link {
-  @apply px-4 py-2 inline-block bg-cyan-500/10 rounded-lg text-cyan-400
-  hover:text-cyan-500 text-sm transition-colors;
+  @apply px-4 py-2 inline-block bg-transparent rounded-lg text-primary hover:bg-base-200 text-sm transition-colors;
 }

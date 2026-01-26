@@ -8,25 +8,22 @@ import { useAuthStore } from './store/useAuthStore'
 import PageLoader from './components/PageLoader'
 import { Toaster } from 'react-hot-toast'
 function App() {
-  const {checkAuth,isCheckingAuth,authUser}= useAuthStore();
+  const { checkAuth, isCheckingAuth, authUser } = useAuthStore();
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
 
-// console.log({authUser})
-if(isCheckingAuth) return <PageLoader />
+  // console.log({authUser})
+  if (isCheckingAuth) return <PageLoader />
   return (
-    <div
-      className="min-h-screen relative flex items-center justify-center p-4 overflow-hidden bg-[linear-gradient(135deg,_white_0%,_white_50%,_rgb(6,115,249)_50%,_rgb(6,115,249)_100%)]
-"
-    >
+    <div className="h-screen w-full overflow-hidden bg-base-100">
       <Routes>
-        <Route path="/" element={authUser ? <ChatPage />: <Navigate to={"/login"}/>} />
-        <Route path="/signup" element={!authUser?<SignUpPage />:<Navigate to={"/"}/>} />
-        <Route path="/login" element={!authUser?<LoginPage />:<Navigate to={"/"}/>} />
+        <Route path="/" element={authUser ? <ChatPage /> : <Navigate to={"/login"} />} />
+        <Route path="/signup" element={!authUser ? <SignUpPage /> : <Navigate to={"/"} />} />
+        <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to={"/"} />} />
       </Routes>
-      <Toaster/>
+      <Toaster />
     </div>
 
   )
