@@ -6,54 +6,63 @@ import NoChatHistory from "./NoChatHistory"
 import MessagesLoadingContainer from './MessagesLoadingContainer'
 import ChatHeader from './ChatHeader'
 import MessageInput from './MessageInput'
+
 function ChatContainer() {
-  const {selectedUser,getMessagesByUserId,messages,isMessagesLoading,subscribeToMessage,unsubscribeFromMessages}=useChatStore()
-  const {authUser}=useAuthStore()
-  const messageEndRef=useRef(null)
-  useEffect(()=>{
+  const { selectedUser, getMessagesByUserId, messages, isMessagesLoading, subscribeToMessage, unsubscribeFromMessages } = useChatStore()
+  const { authUser } = useAuthStore()
+  const messageEndRef = useRef(null)
+
+  useEffect(() => {
     getMessagesByUserId(selectedUser.id)
     subscribeToMessage()
-    return ()=>unsubscribeFromMessages()
-  },[selectedUser,getMessagesByUserId,unsubscribeFromMessages,subscribeToMessage])
-  useEffect(()=>{
-    if (messageEndRef.current){
-      messageEndRef.current.scrollIntoView({behavior:"smooth"})
+    return () => unsubscribeFromMessages()
+  }, [selectedUser, getMessagesByUserId, unsubscribeFromMessages, subscribeToMessage])
+
+  useEffect(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" })
     }
-  },[messages])
+  }, [messages])
 
 
   return (
     <>
-    <ChatHeader/>
-    <div className='flex-1 px-6 overflow-y-auto py-8'>
-      {messages.length>0 && !isMessagesLoading?(
-       <div className='max-w-3xl mx-auto space-y-6'>
-        {messages.map(msg=>(
-          <div key={msg.id} className={`chat ${msg.senderId===authUser.id?"chat-end":"chat-start"}`}>
-            <div className={`chat-bubble relative ${
-              msg.senderId===authUser.id? "bg-blue-500 text-white":"bg-slate-800 text-slate-200"
-            }`}>
+      <div className="z-10 bg-base-200 border-b border-base-content/20">
+        <ChatHeader />
+      </div>
 
-              {msg.image && (<img src={msg.image} alt="shared" className='rounded-lg h-48 object cover'/>)}
-              {msg.text && <p className='mt-2'>{msg.text}</p>}
-              <p className='text-xs mt-1 opacity--75 flex items-center gap-1'>
-                {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </p>
+      <div className='flex-1 px-4 overflow-y-auto py-4 custom-scrollbar z-10'>
+        {messages.length > 0 && !isMessagesLoading ? (
+          <div className='flex flex-col space-y-2 max-w-[95%] mx-auto'>
+            {messages.map(msg => (
+              <div key={msg.id} className={`flex ${msg.senderId === authUser.id ? "justify-end" : "justify-start"}`}>
+                <div className={`relative px-3 py-1.5 max-w-lg rounded-lg shadow-sm text-sm ${msg.senderId === authUser.id
+                  ? "bg-primary text-primary-content rounded-tr-none border border-primary-content/20"
+                  : "bg-base-200 text-base-content rounded-tl-none border border-base-content/10"
+                  }`}>
 
-            </div>
+                  {msg.image && (<img src={msg.image} alt="shared" className='rounded-md max-w-[300px] max-h-[300px] object-cover mb-1' />)}
+                  {msg.text && <p className='mr-12 text-[14.2px] leading-relaxed'>{msg.text}</p>}
+
+                  <span className='absolute bottom-1 right-2 text-[10px] text-base-content/70'>
+                    {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true })}
+                  </span>
+
+                </div>
+
+              </div>
+            ))}
+            <div ref={messageEndRef} />
 
           </div>
-        ))}
-        <div  ref={messageEndRef} />
+        ) :
 
-       </div>
-      ):
+          isMessagesLoading ? <MessagesLoadingContainer /> : (<NoChatHistory name={selectedUser.fullName} />)}
 
-      
-      isMessagesLoading?<MessagesLoadingContainer/>:(<NoChatHistory name={selectedUser.fullName}/> )}
-
-    </div>
-    <MessageInput/>
+      </div>
+      <div className='bg-base-200 p-3 z-10'>
+        <MessageInput />
+      </div>
     </>
   )
 }
