@@ -54,7 +54,7 @@ body {
 }
 
 .auth-badge {
-  @apply inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-primary/10 text-primary;
+  @apply inline-flex items-center px-3 py-1 text-xs font-medium rounded-full bg-white/10 text-white;
 }
 
 .auth-btn {

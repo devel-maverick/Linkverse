@@ -1,13 +1,19 @@
 import React from 'react'
 import { useChatStore } from '../store/useChatStore'
-import { XIcon } from 'lucide-react'
+import { XIcon, Video } from 'lucide-react'
 import { useEffect } from 'react'
 import { useAuthStore } from '../store/useAuthStore'
 
 function ChatHeader() {
     const { selectedUser, setSelectedUser } = useChatStore()
-    const { onlineUsers } = useAuthStore()
+    const { authUser, onlineUsers } = useAuthStore()
     const isOnline = onlineUsers.includes(String(selectedUser.id))
+
+    const handleVideoCall = () => {
+        const roomID = [authUser.id, selectedUser.id].sort().join('-');
+        const meetingUrl = `https://meet.jit.si/linkverse-${roomID}`;
+        window.open(meetingUrl, '_blank');
+    };
     return (
         <div className='flex justify-between items-center bg-base-200 border-b border-base-content/20 px-6 py-3 flex-1'>
             <div className='flex items-center space-x-3'>
@@ -26,9 +32,14 @@ function ChatHeader() {
 
                 </div>
             </div>
-            <button onClick={() => setSelectedUser(null)}>
-                <XIcon className='w-5 h-5 text-base-content/60 hover:text-base-content transition-colors cursor-pointer' />
-            </button>
+            <div className='flex items-center gap-3'>
+                <button onClick={handleVideoCall} title='Start Video Call'>
+                    <Video className='size-5 text-base-content/60 hover:text-base-content transition-colors cursor-pointer' />
+                </button>
+                <button onClick={() => setSelectedUser(null)}>
+                    <XIcon className='size-5 text-base-content/60 hover:text-base-content transition-colors cursor-pointer' />
+                </button>
+            </div>
         </div>
     )
 }
