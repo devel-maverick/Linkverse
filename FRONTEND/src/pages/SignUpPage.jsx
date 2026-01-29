@@ -17,7 +17,7 @@ function SignUpPage() {
       <div className="w-full md:w-1/2 flex items-center justify-center p-12 border-r border-base-content/10">
         <div className="w-full max-w-xl space-y-8">
           <div className="text-center">
-            <MessageCircleIcon className="w-16 h-16 mx-auto text-primary mb-6" />
+            <MessageCircleIcon className="w-16 h-16 mx-auto text-white mb-6" />
             <h2 className="text-4xl font-bold text-base-content mb-4">Create Account</h2>
             <p className="text-base-content/60 text-lg">Sign up for a new account</p>
           </div>
@@ -71,7 +71,7 @@ function SignUpPage() {
             </div>
 
 
-            <button className="btn btn-primary w-full h-14 text-lg font-bold rounded-lg" type="submit" disabled={isSigningUp}>
+            <button className="btn btn-primary w-full h-14 text-lg font-bold rounded-lg text-white" type="submit" disabled={isSigningUp}>
               {isSigningUp ? (
                 <LoaderIcon className="w-full h-6 animate-spin text-center" />
               ) : (

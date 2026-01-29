@@ -35,8 +35,8 @@ function ChatContainer() {
         {messages.length > 0 && !isMessagesLoading ? (
           <div className='flex flex-col space-y-2 max-w-[95%] mx-auto'>
             {messages.map(msg => (
-              <div key={msg.id} className={`flex ${msg.senderId === authUser.id ? "justify-end" : "justify-start"}`}>
-                <div className={`relative px-3 py-1.5 max-w-lg rounded-lg shadow-sm text-sm ${msg.senderId === authUser.id
+              <div key={msg.id} className={`flex ${msg.senderId.toString() === authUser.id.toString() ? "justify-end" : "justify-start"}`}>
+                <div className={`relative px-3 py-1.5 max-w-lg rounded-lg shadow-sm text-sm ${msg.senderId.toString() === authUser.id.toString()
                   ? "bg-primary text-primary-content rounded-tr-none border border-primary-content/20"
                   : "bg-base-200 text-base-content rounded-tl-none border border-base-content/10"
                   }`}>

@@ -83,12 +83,9 @@ export const useChatStore = create((set, get) => ({
         set(state => ({
             messages: [...state.messages, optimisticMessage]
         }));
-
-        // Optimistic update for sidebar - INSTANT
         set(state => {
             const chatIndex = state.chats.findIndex(c => c.id === selectedUser.id);
             if (chatIndex === -1) {
-                // New chat - Add to sidebar immediately
                 const newChat = {
                     ...selectedUser,
                     lastMessage: optimisticMessage,
@@ -96,7 +93,6 @@ export const useChatStore = create((set, get) => ({
                 };
                 return { chats: [newChat, ...state.chats] };
             } else {
-                // Existing chat - Update and move to top
                 const updatedChats = state.chats.map(chat => {
                     if (chat.id === selectedUser.id) {
                         return { ...chat, lastMessage: optimisticMessage };
@@ -111,15 +107,11 @@ export const useChatStore = create((set, get) => ({
 
         try {
             const res = await axiosInstance.post(`/messages/send/${selectedUser.id}`, messageData);
-
-            // Replace optimistic message with real one in messages
             set(state => ({
                 messages: state.messages.map(msg =>
                     msg.id === tempId ? res.data : msg
                 )
             }));
-
-            // Update sidebar with real message data
             set(state => {
                 const updatedChats = state.chats.map(chat => {
                     if (chat.id === selectedUser.id) {
@@ -131,7 +123,6 @@ export const useChatStore = create((set, get) => ({
             });
 
         } catch (error) {
-            // Revert on failure
             set(state => ({
                 messages: state.messages.filter(msg => msg.id !== tempId)
             }));
@@ -142,32 +133,24 @@ export const useChatStore = create((set, get) => ({
         const { selectedUser, isSoundEnabled } = get()
         const socket = useAuthStore.getState().socket;
         if (!socket) return;
-
-        // Remove any existing listener first to prevent duplicates
         socket.off("newMessage");
 
         socket.on("newMessage", async (newMessage) => {
-            // Update messages if chat is open
-            if (get().selectedUser && newMessage.senderId === get().selectedUser.id) {
+            if (get().selectedUser && newMessage.senderId.toString() === get().selectedUser.id.toString()) {
                 set(state => ({
                     messages: [...state.messages, newMessage]
                 }));
             } else {
-                // Play sound for background messages
                 if (isSoundEnabled) {
                     const notificationSound = new Audio("/sounds/notification.mp3");
-                    notificationSound.currentTime = 0
-                    notificationSound.play().catch((e) => console.log("Audio Failed:", e))
+                    notificationSound.play().catch((e) => console.log("Audio Failed:", e));
                 }
             }
-
-            // Update sidebar (last message & unread count)
             set(state => {
                 let chatExists = false;
                 const updatedChats = state.chats.map(chat => {
                     if (chat.id === newMessage.senderId) {
                         chatExists = true;
-                        // Increment unread count if chat is NOT active
                         const isChatActive = get().selectedUser?.id === chat.id;
                         return {
                             ...chat,
@@ -175,8 +158,7 @@ export const useChatStore = create((set, get) => ({
                             unreadCount: isChatActive ? 0 : (chat.unreadCount || 0) + 1
                         };
                     }
-                    if (chat.id === get().selectedUser?.id && newMessage.senderId === get().authUser.id) {
-                        // Optimistic update for my own sent message showing in sidebar
+                    if (chat.id === get().selectedUser?.id && newMessage.senderId.toString() === get().authUser.id.toString()) {
                         return {
                             ...chat,
                             lastMessage: newMessage
@@ -184,12 +166,7 @@ export const useChatStore = create((set, get) => ({
                     }
                     return chat;
                 });
-
-                // If chat doesn't exist (new sender), we need to fetch user info or optimistically add if we had it
-                // For now, if we don't have the user data, we might need to trigger a re-fetch of all chats
                 if (!chatExists && newMessage.senderId !== get().authUser.id) {
-                    // Logic to add new user to sidebar would go here. 
-                    // Simplest approach: trigger a refetch of Sidebar.
                     get().getMyChatPartners();
                 }
 
