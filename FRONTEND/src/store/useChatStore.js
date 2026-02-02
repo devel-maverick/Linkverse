@@ -68,6 +68,11 @@ export const useChatStore = create((set, get) => ({
     sendMessage: async (messageData) => {
         const { selectedUser, messages, chats } = get();
         const { authUser } = useAuthStore.getState();
+        if (!authUser) {
+            toast.error("You must be logged in to send messages");
+            return;
+        }
+
         const tempId = `temp-${Date.now()}`;
         const optimisticMessage = {
             id: tempId,
@@ -158,7 +163,7 @@ export const useChatStore = create((set, get) => ({
                             unreadCount: isChatActive ? 0 : (chat.unreadCount || 0) + 1
                         };
                     }
-                    if (chat.id === get().selectedUser?.id && newMessage.senderId.toString() === useAuthStore.getState().authUser.id.toString()) {
+                    if (chat.id === get().selectedUser?.id && useAuthStore.getState().authUser && newMessage.senderId.toString() === useAuthStore.getState().authUser.id.toString()) {
                         return {
                             ...chat,
                             lastMessage: newMessage
@@ -166,7 +171,7 @@ export const useChatStore = create((set, get) => ({
                     }
                     return chat;
                 });
-                if (!chatExists && newMessage.senderId !== useAuthStore.getState().authUser.id) {
+                if (!chatExists && useAuthStore.getState().authUser && newMessage.senderId !== useAuthStore.getState().authUser.id) {
                     get().getMyChatPartners();
                 }
 
