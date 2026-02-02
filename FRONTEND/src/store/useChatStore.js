@@ -158,7 +158,7 @@ export const useChatStore = create((set, get) => ({
                             unreadCount: isChatActive ? 0 : (chat.unreadCount || 0) + 1
                         };
                     }
-                    if (chat.id === get().selectedUser?.id && newMessage.senderId.toString() === get().authUser.id.toString()) {
+                    if (chat.id === get().selectedUser?.id && newMessage.senderId.toString() === useAuthStore.getState().authUser.id.toString()) {
                         return {
                             ...chat,
                             lastMessage: newMessage
@@ -166,7 +166,7 @@ export const useChatStore = create((set, get) => ({
                     }
                     return chat;
                 });
-                if (!chatExists && newMessage.senderId !== get().authUser.id) {
+                if (!chatExists && newMessage.senderId !== useAuthStore.getState().authUser.id) {
                     get().getMyChatPartners();
                 }
 
