@@ -7,7 +7,7 @@
     "node": ">=20.0.0"
   },
   "scripts": {
-    "build": "npm install --prefix BACKEND && npm install --prefix FRONTEND && npm run build --prefix FRONTEND",
+    "build": "npm install --prefix BACKEND && npm install --prefix FRONTEND --include=dev && npm run build --prefix FRONTEND",
     "start": "npm run start --prefix BACKEND"
   },
   "repository": {
