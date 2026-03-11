@@ -32,7 +32,7 @@ export const useChatStore = create((set, get) => ({
 
         }
         catch (err) {
-            toast.error(error.response.data.message)
+            toast.error(err.response?.data?.message || "Something went wrong")
 
         } finally {
             set({ isUsersLoading: false })
@@ -45,7 +45,7 @@ export const useChatStore = create((set, get) => ({
             set({ chats: res.data })
         }
         catch (err) {
-            toast.error(error.response.data.message)
+            toast.error(err.response?.data?.message || "Something went wrong")
 
         } finally {
             set({ isUsersLoading: false })
@@ -57,7 +57,7 @@ export const useChatStore = create((set, get) => ({
             const res = await axiosInstance.get(`/messages/${userId}`)
             set({ messages: res.data })
         } catch (err) {
-            toast.error(error.response?.data?.message || "something went wrong")
+            toast.error(err.response?.data?.message || "Something went wrong")
 
         } finally {
             set({ isMessagesLoading: false })

@@ -34,9 +34,11 @@ function ChatContainer() {
       <div className='flex-1 px-4 overflow-y-auto py-4 custom-scrollbar z-10'>
         {messages.length > 0 && !isMessagesLoading ? (
           <div className='flex flex-col space-y-2 max-w-[95%] mx-auto'>
-            {messages.map(msg => (
-              <div key={msg.id} className={`flex ${authUser && msg.senderId.toString() === authUser.id.toString() ? "justify-end" : "justify-start"}`}>
-                <div className={`relative px-3 py-1.5 max-w-lg rounded-lg shadow-sm text-sm ${authUser && msg.senderId.toString() === authUser.id.toString()
+            {messages.map(msg => {
+              const isMine = authUser && msg.senderId != null && authUser.id != null && String(msg.senderId) === String(authUser.id);
+              return (
+              <div key={msg.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+                <div className={`relative px-3 py-1.5 max-w-lg rounded-lg shadow-sm text-sm ${isMine
                   ? "bg-primary text-primary-content rounded-tr-none border border-primary-content/20"
                   : "bg-base-200 text-base-content rounded-tl-none border border-base-content/10"
                   }`}>
@@ -51,7 +53,7 @@ function ChatContainer() {
                 </div>
 
               </div>
-            ))}
+            )})}
             <div ref={messageEndRef} />
 
           </div>
